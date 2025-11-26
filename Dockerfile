@@ -1,10 +1,12 @@
-FROM golang:1.13.15-alpine3.12 as builder
-WORKDIR /build
-ENV CGO_ENABLED=0
-RUN apk add -U git
-RUN git clone https://github.com/kahing/goofys.git . && \
-    go build -ldflags "-X main.Version=`git rev-parse HEAD`"
 FROM alpine:3.12
+
+RUN apk add --no-cache fuse libc6-compat ca-certificates wget
+
 WORKDIR /app
-COPY --from=builder /build/goofys .
-CMD [./goofys]
+
+# Download pre-built goofys binary
+RUN wget -q https://github.com/kahing/goofys/releases/download/v0.24.0/goofys && \
+    chmod +x goofys
+
+ENTRYPOINT ["/app/goofys"]
+CMD []

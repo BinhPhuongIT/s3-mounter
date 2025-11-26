@@ -21,4 +21,4 @@ services:
       - AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL}
     volumes:
       - /mnt/s3:/mnt/s3
-    command: ["./goofys", "-f", "${BUCKET_NAME}", "${MOUNT_PATH}"]
+    command: ["./goofys", "---endpoint=${AWS_ENDPOINT_URL}", "${BUCKET_NAME}", "${MOUNT_PATH}"]
