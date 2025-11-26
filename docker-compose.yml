@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  s3-mounter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: s3-mounter
+    restart: always
+    privileged: true
+    cap_add:
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse:/dev/fuse
+    environment:
+      - BUCKET_NAME=${BUCKET_NAME:-my-bucket}
+      - MOUNT_PATH=${MOUNT_PATH:-/mnt/s3}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION:-us-east-1}
+      - AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL}
+    volumes:
+      - /mnt/s3:/mnt/s3
+    command: ["./goofys", "-f", "${BUCKET_NAME}", "${MOUNT_PATH}"]
